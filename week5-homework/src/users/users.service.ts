@@ -3,12 +3,13 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
+// import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './users.model';
 import { SignupDto } from 'src/auth/dto/signup.dto';
-import { Email } from 'src/email/entities/email.entity';
-import { LoginDto } from 'src/auth/dto/login.dto';
+// import { Email } from 'src/email/entities/email.entity';
+// import { LoginDto } from 'src/auth/dto/login.dto';
+// import { QueryRunner } from 'typeorm';
 
 @Injectable()
 export class UsersService {
@@ -16,10 +17,6 @@ export class UsersService {
 
   create(createUserDto: SignupDto) {
     const { email, name, password, verificationCode } = createUserDto;
-
-    /*if (this.users.find((user) => user.email === email)) {
-      throw new ConflictException('User already exist');
-    }*/
     const exist = this.findOne(email);
     if (exist) {
       throw new ConflictException('user already exist');
