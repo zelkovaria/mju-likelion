@@ -5,17 +5,18 @@ import {
   Entity,
   OneToMany,
   PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 
 @Entity('User') //User가 테이블 명으로 생기는거임
 export class UserEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: string;
 
   @OneToMany(() => Post, (post) => post.user)
   posts: Post[];
 
-  @Column({ length: 30 })
+  @Column({ length: 50 })
   name: string;
 
   @Column({ length: 60 })
@@ -27,7 +28,7 @@ export class UserEntity {
   @Column({ length: 60, unique: true })
   verificationCode: string;
 
-  @Column({})
+  @Column({ type: 'boolean', default: false })
   isVerified: boolean;
 
   @CreateDateColumn()

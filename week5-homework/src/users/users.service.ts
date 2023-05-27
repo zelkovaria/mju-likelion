@@ -7,39 +7,73 @@ import {
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './users.model';
 import { SignupDto } from 'src/auth/dto/signup.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from './entities/users.entity';
+import { Repository } from 'typeorm';
 // import { Email } from 'src/email/entities/email.entity';
 // import { LoginDto } from 'src/auth/dto/login.dto';
 // import { QueryRunner } from 'typeorm';
 
 @Injectable()
 export class UsersService {
-  users: User[] = [];
+  // users: User[] = [];
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly usersRepository: Repository<UserEntity>,
+  ) {}
 
-  create(createUserDto: SignupDto) {
-    const { email, name, password, verificationCode } = createUserDto;
-    const exist = this.findOne(email);
+  async create(createUserDto: SignupDto) {
+    const { email, name, password } = createUserDto;
+    // select 1 from user where email = "asfd@afsd;jlk.com";
+    // const user = await this.usersRepository.findOne({
+    //   where: {
+    //     email: email,
+    //   },
+    // }); //findOneBy와 차이점 where절
+
+    // const exist = this.findOne(email); // 저장소에서 email을 가진 user 찾아줘
+    const exist = await this.usersRepository.findOneBy({ email: email });
     if (exist) {
       throw new ConflictException('user already exist');
     }
-    const user = {
+
+    // user 만들기
+    // const user = {
+    //   email,
+    //   name,
+    //   password,
+    //   verificationCode,
+    // };
+
+    // const user = new UserEntity();
+    const user = await this.usersRepository.create({
       email,
       name,
       password,
-      verificationCode,
-    };
+      //인증 코드 진짜로 바꿔야함
+      verificationCode: '12345678',
+    });
 
-    this.users.push(user);
+    //메모리에 들어간 값들을 users에 넣어줌
+    // 만든 user를 저장
+    // this.users.push(user); // 메모리에 저장
+    await this.usersRepository.save(user);
     return user;
   }
 
-  findOne(email: string) {
-    //const { email } = loginDto;
-    const user = this.users.find((user) => user.email === email);
-
+  async findOne(id: string) {
+    const user = await this.usersRepository.findOneBy({ id });
     if (!user) {
       throw new NotFoundException('User not found');
     }
+    return user;
+  }
 
+  async findOneByEmail(email: string) {
+    const user = await this.usersRepository.findOneBy({ email });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
     return user;
   }
 
