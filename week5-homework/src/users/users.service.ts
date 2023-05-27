@@ -62,7 +62,10 @@ export class UsersService {
   }
 
   async findOne(id: string) {
-    const user = await this.usersRepository.findOneBy({ id });
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: ['posts'], //users.entitu 중 posts: Post[];에 있는 키값인 posts를 가져옴
+    });
     if (!user) {
       throw new NotFoundException('User not found');
     }

@@ -11,7 +11,7 @@ import {
 
 @Entity('Post')
 export class Post {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
   id: string;
 
   @ManyToOne(() => UserEntity, (user) => user.posts)

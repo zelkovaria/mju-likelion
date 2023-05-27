@@ -1,36 +1,37 @@
 import {
   BadRequestException,
   Injectable,
-  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { Post } from './posts.model';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Post } from './entities/post.entity';
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class PostsService {
-  constructor(private usersService: UsersService) {}
+  constructor(
+    @InjectRepository(Post)
+    private readonly postsRepository: Repository<Post>,
+    private readonly usersService: UsersService,
+  ) {}
 
-  private posts: Post[] = [];
-  private postId: number;
-  createPost(userId: string, createPostDto: CreatePostDto) {
+  // private posts: Post[] = [];
+  async createPost(userId: string, createPostDto: CreatePostDto) {
     if (!userId) {
       throw new UnauthorizedException('로그인 안하셨잖아요');
     }
-    const user = this.usersService.findOne(userId);
 
-    this.postId += 1;
-    const newPosts: Post = {
-      id: this.postId++,
-      writerId: user.email,
-      content: createPostDto.content,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    };
-    this.posts.push(newPosts);
-    return newPosts;
+    const user = await this.usersService.findOne(userId);
+
+    const { content } = createPostDto;
+    const post = await this.postsRepository.create({
+      content,
+      user,
+    });
+    await this.postsRepository.save(post);
   }
 
   findAll() {
