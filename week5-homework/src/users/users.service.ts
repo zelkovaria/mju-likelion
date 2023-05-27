@@ -92,15 +92,21 @@ export class UsersService {
 
   //   return user;
   // }
-  update(userEmail: string, updateUserDto: UpdateUserDto) {
-    const { email, password } = updateUserDto;
-    const user = this.findOne(userEmail);
-    this.users = this.users.filter((user) => user.email !== userEmail); // 기존 정보 제거
-    console.log(this.users);
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const { name, email, password } = updateUserDto;
+    const user = await this.findOne(id);
+    user.name = name;
     user.email = email;
     user.password = password;
-    this.users.push(user);
-    console.log('게시글 수정 완료'); //이름은 바꿀수 없음
+    await this.usersRepository.save(user);
+    // const user = await this.usersRepository.update({ id }, { email, password });
+    // this.users = this.users.filter((user) => user.email !== userEmail); // 기존 정보 제거
+    // console.log(this.users);
+    // user.email = email;
+    // user.password = password;
+    // this.users.push(user);
+    // console.log('게시글 수정 완료'); //이름은 바꿀수 없음
+    return user;
   }
 
   remove(email: string) {
