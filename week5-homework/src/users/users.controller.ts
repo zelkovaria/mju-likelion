@@ -7,17 +7,20 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+import { Controller, Get, Body, Patch, Param, Delete } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
+// import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+// import { Email } from 'src/email/entities/email.entity';
+import { FindUserDto } from './dto/find-user.dto';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Get('/:userId')
-  findOne(@Param('userId') userId: string) {
-    return this.usersService.findOne(userId);
+  @Get('/:id1')
+  findOne(@Param('id1') id2: string) {
+    return this.usersService.findOne(id2);
   }
 
   @Patch('/:userId')
