@@ -36,6 +36,8 @@ export class PostsService {
 
   findAll() {
     return this.posts;
+  async findAll() {
+    return await this.postsRepository.find();
   }
 
   findOne(postid: number) {
