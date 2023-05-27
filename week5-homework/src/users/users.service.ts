@@ -109,15 +109,14 @@ export class UsersService {
     return user;
   }
 
-  remove(email: string) {
-    const user = this.users.find((user) => user.email === email);
-
-    if (!user) {
-      throw new NotFoundException('User not found');
-    }
-
-    this.users = this.users.filter((user) => user.email !== email);
-
-    return user;
+  async remove(id: string) {
+    // const user = this.users.find((user) => user.email === email);
+    await this.findOne(id);
+    // if (!user) {
+    //   throw new NotFoundException('User not found');
+    // }
+    // this.users = this.users.filter((user) => user.email !== email);
+    // return user;
+    await this.usersRepository.delete({ id });
   }
 }
