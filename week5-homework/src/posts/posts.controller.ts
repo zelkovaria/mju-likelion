@@ -37,10 +37,10 @@ export class PostsController {
   @Patch('/:postId')
   update(
     @Headers('userId') userId: string,
-    @Param('postId') postId: number,
+    @Param('postId') postId: string,
     @Body() updatePostDto: UpdatePostDto,
   ) {
-    return this.postsService.update(userId, +postId, updatePostDto);
+    return this.postsService.update(userId, postId, updatePostDto);
   }
   @Delete('/:postId')
   remove(@Headers('userId') userId: string, @Param('postId') postId: number) {

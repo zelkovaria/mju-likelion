@@ -48,24 +48,19 @@ export class PostsService {
     return post;
   }
 
-  update(userId: string, postId: number, updatePostDto: UpdatePostDto) {
-    const post = this.posts.find((post) => post.id === postId);
-    this.usersService.findOne(userId);
-
-    if (!userId) {
-      throw new UnauthorizedException('로그인 안하셨습니다');
-    }
-
-    if (!post) {
-      throw new NotFoundException('해당 게시글을 찾을 수 없습니다');
-    }
-    this.posts = this.posts.filter((post) => post.id !== postId);
+  async update(userId: string, postId: string, updatePostDto: UpdatePostDto) {
     const { content } = updatePostDto;
-    post.content = content;
-    post.updatedAt = new Date();
-
-    this.posts.push(post);
-    return post;
+    const postUser = await this.postsRepository.findOne({
+      where: { user: { id: userId } },
+      relations: ['user'],
+    });
+    if (!postUser) {
+      throw new NotFoundException('user not found');
+    } else {
+      postUser.content = content;
+      await this.postsRepository.save(postUser);
+      return postUser;
+    } //유저 확인 userService로 쓰는거 오빠한테 물어보기
   }
 
   remove(userId: string, postId: number) {
