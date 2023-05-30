@@ -63,18 +63,8 @@ export class PostsService {
     } //유저 확인 userService로 쓰는거 오빠한테 물어보기
   }
 
-  remove(userId: string, postId: number) {
-    const post = this.posts.find((post) => post.id === postId);
-    this.usersService.findOne(userId);
-    if (!userId) {
-      throw new BadRequestException('로그인이 안 디어있습니다');
-    }
-    if (!post) {
-      throw new UnauthorizedException('해당 id의 글이 없습니다');
-    }
-    if (post.writerId !== userId) {
-      throw new UnauthorizedException('이 글에 대한 권한이 없으세영');
-    }
-    this.posts = this.posts.filter((post) => post.id !== postId);
+  async remove(userId: string, id: string) {
+    await this.findOne(userId);
+    await this.postsRepository.delete({ id });
   }
 }

@@ -43,7 +43,7 @@ export class PostsController {
     return this.postsService.update(userId, postId, updatePostDto);
   }
   @Delete('/:postId')
-  remove(@Headers('userId') userId: string, @Param('postId') postId: number) {
-    return this.postsService.remove(userId, +postId);
+  remove(@Headers('userId') userId: string, @Param('postId') postId: string) {
+    return this.postsService.remove(userId, postId);
   }
 }
