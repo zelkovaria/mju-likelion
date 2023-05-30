@@ -40,10 +40,10 @@ export class PostsService {
     return await this.postsRepository.find();
   }
 
-  findOne(postid: number) {
-    const post = this.posts.find((post) => post.id === postid);
+  async findOne(id: string) {
+    const post = await this.postsRepository.findOne({ where: { id } });
     if (!post) {
-      throw new NotFoundException('해당 id의 포스트는 없음');
+      throw new NotFoundException('User not found');
     }
     return post;
   }
